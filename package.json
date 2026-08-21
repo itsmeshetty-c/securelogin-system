@@ -1,0 +1,30 @@
+{
+  "name": "secure-login-system",
+  "version": "1.0.0",
+  "description": "Secure Login Web Application with Hashed Passwords, SQLi Protection, Session Management, and 2FA",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node test/security.test.js"
+  },
+  "keywords": [
+    "security",
+    "auth",
+    "2fa",
+    "bcrypt",
+    "session",
+    "sqlite"
+  ],
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
+    "express-session": "^1.18.0",
+    "helmet": "^7.1.0",
+    "otplib": "^12.0.1",
+    "qrcode": "^1.5.4",
+    "sqlite3": "^5.1.7",
+    "validator": "^13.12.0"
+  }
+}
