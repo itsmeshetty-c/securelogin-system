@@ -1,0 +1,71 @@
+<%- include('partials/header') %>
+
+<div class="auth-container">
+  <div class="card auth-card">
+    <div class="card-header">
+      <i class="fa-solid fa-right-to-bracket auth-icon"></i>
+      <h2>Welcome Back</h2>
+      <p class="auth-subtitle">Log in to your secure account</p>
+    </div>
+
+    <form action="/login" method="POST" id="login-form">
+      <!-- Username or Email Field -->
+      <div class="form-group">
+        <label for="identifier"><i class="fa-solid fa-user-shield"></i> Username or Email</label>
+        <input 
+          type="text" 
+          id="identifier" 
+          name="identifier" 
+          class="form-control" 
+          placeholder="username or email@company.com"
+          value="<%= formData.identifier || '' %>"
+          required
+          autofocus
+        >
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password"><i class="fa-solid fa-lock"></i> Password</label>
+        <div class="input-password-wrapper">
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            class="form-control" 
+            placeholder="••••••••••••"
+            required
+          >
+          <button type="button" class="btn-toggle-pw" onclick="togglePasswordVisibility('password', this)">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary btn-block btn-lg">
+        <i class="fa-solid fa-unlock-keyhole"></i> Log In
+      </button>
+    </form>
+
+    <div class="card-footer">
+      <p>Don't have an account? <a href="/register" class="link-highlight">Register here</a></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.className = 'fa-solid fa-eye-slash';
+    } else {
+      input.type = 'password';
+      icon.className = 'fa-solid fa-eye';
+    }
+  }
+</script>
+
+<%- include('partials/footer') %>

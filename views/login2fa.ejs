@@ -1,0 +1,40 @@
+<%- include('partials/header') %>
+
+<div class="auth-container">
+  <div class="card auth-card">
+    <div class="card-header">
+      <i class="fa-solid fa-mobile-screen-button auth-icon icon-2fa"></i>
+      <h2>Two-Factor Verification</h2>
+      <p class="auth-subtitle">Enter the 6-digit code from Google Authenticator or Authy</p>
+    </div>
+
+    <form action="/login-2fa" method="POST" id="form-2fa">
+      <div class="form-group">
+        <label for="otpToken"><i class="fa-solid fa-shield-halved"></i> 6-Digit Authenticator Code</label>
+        <input 
+          type="text" 
+          id="otpToken" 
+          name="otpToken" 
+          class="form-control otp-input" 
+          placeholder="123456"
+          maxlength="6" 
+          pattern="\d{6}" 
+          required 
+          autofocus 
+          autocomplete="one-time-code"
+        >
+        <small class="form-hint text-center">Codes refresh every 30 seconds</small>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block btn-lg">
+        <i class="fa-solid fa-check-double"></i> Verify & Sign In
+      </button>
+    </form>
+
+    <div class="card-footer">
+      <a href="/logout" class="link-muted"><i class="fa-solid fa-arrow-left"></i> Cancel and back to login</a>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

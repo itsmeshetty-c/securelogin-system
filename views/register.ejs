@@ -1,0 +1,160 @@
+<%- include('partials/header') %>
+
+<div class="auth-container">
+  <div class="card auth-card">
+    <div class="card-header">
+      <i class="fa-solid fa-user-plus auth-icon"></i>
+      <h2>Create Secure Account</h2>
+      <p class="auth-subtitle">Register to access the encrypted dashboard</p>
+    </div>
+
+    <form action="/register" method="POST" id="register-form" novalidate>
+      <!-- Username Field -->
+      <div class="form-group">
+        <label for="username"><i class="fa-solid fa-user"></i> Username</label>
+        <input 
+          type="text" 
+          id="username" 
+          name="username" 
+          class="form-control" 
+          placeholder="e.g. alex_developer"
+          value="<%= formData.username || '' %>"
+          required 
+          minlength="3" 
+          maxlength="20"
+        >
+        <small class="form-hint">3-20 characters (letters, numbers, underscores)</small>
+      </div>
+
+      <!-- Email Field -->
+      <div class="form-group">
+        <label for="email"><i class="fa-solid fa-envelope"></i> Email Address</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email" 
+          class="form-control" 
+          placeholder="alex@company.com"
+          value="<%= formData.email || '' %>"
+          required
+        >
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label for="password"><i class="fa-solid fa-lock"></i> Password</label>
+        <div class="input-password-wrapper">
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            class="form-control" 
+            placeholder="••••••••••••"
+            required
+          >
+          <button type="button" class="btn-toggle-pw" onclick="togglePasswordVisibility('password', this)">
+            <i class="fa-solid fa-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Password Strength Meter -->
+      <div class="password-strength-box">
+        <div class="strength-bar-container">
+          <div class="strength-bar" id="strength-bar"></div>
+        </div>
+        <span class="strength-text" id="strength-text">Password Strength</span>
+        
+        <ul class="strength-checklist">
+          <li id="rule-len"><i class="fa-solid fa-circle-xmark"></i> At least 8 characters</li>
+          <li id="rule-upper"><i class="fa-solid fa-circle-xmark"></i> One uppercase letter (A-Z)</li>
+          <li id="rule-lower"><i class="fa-solid fa-circle-xmark"></i> One lowercase letter (a-z)</li>
+          <li id="rule-num"><i class="fa-solid fa-circle-xmark"></i> One number (0-9)</li>
+          <li id="rule-special"><i class="fa-solid fa-circle-xmark"></i> One special symbol (@$!%*?&)</li>
+        </ul>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn-primary btn-block btn-lg" id="submit-btn">
+        <i class="fa-solid fa-shield-halved"></i> Create Account
+      </button>
+    </form>
+
+    <div class="card-footer">
+      <p>Already have an account? <a href="/login" class="link-highlight">Log in here</a></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  function togglePasswordVisibility(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon = btn.querySelector('i');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.className = 'fa-solid fa-eye-slash';
+    } else {
+      input.type = 'password';
+      icon.className = 'fa-solid fa-eye';
+    }
+  }
+
+  // Password Strength Interactive Check
+  const passwordInput = document.getElementById('password');
+  const strengthBar = document.getElementById('strength-bar');
+  const strengthText = document.getElementById('strength-text');
+
+  const ruleLen = document.getElementById('rule-len');
+  const ruleUpper = document.getElementById('rule-upper');
+  const ruleLower = document.getElementById('rule-lower');
+  const ruleNum = document.getElementById('rule-num');
+  const ruleSpecial = document.getElementById('rule-special');
+
+  function updateRule(elem, isValid) {
+    const icon = elem.querySelector('i');
+    if (isValid) {
+      elem.classList.add('valid');
+      icon.className = 'fa-solid fa-circle-check';
+    } else {
+      elem.classList.remove('valid');
+      icon.className = 'fa-solid fa-circle-xmark';
+    }
+  }
+
+  passwordInput.addEventListener('input', () => {
+    const val = passwordInput.value;
+    
+    const hasLen = val.length >= 8;
+    const hasUpper = /[A-Z]/.test(val);
+    const hasLower = /[a-z]/.test(val);
+    const hasNum = /[0-9]/.test(val);
+    const hasSpecial = /[@$!%*?&]/.test(val);
+
+    updateRule(ruleLen, hasLen);
+    updateRule(ruleUpper, hasUpper);
+    updateRule(ruleLower, hasLower);
+    updateRule(ruleNum, hasNum);
+    updateRule(ruleSpecial, hasSpecial);
+
+    const score = [hasLen, hasUpper, hasLower, hasNum, hasSpecial].filter(Boolean).length;
+    
+    let width = (score / 5) * 100;
+    strengthBar.style.width = width + '%';
+
+    if (score <= 2) {
+      strengthBar.style.backgroundColor = '#ef4444';
+      strengthText.textContent = 'Weak Password';
+      strengthText.style.color = '#ef4444';
+    } else if (score <= 4) {
+      strengthBar.style.backgroundColor = '#f59e0b';
+      strengthText.textContent = 'Moderate Password';
+      strengthText.style.color = '#f59e0b';
+    } else {
+      strengthBar.style.backgroundColor = '#10b981';
+      strengthText.textContent = 'Strong Password';
+      strengthText.style.color = '#10b981';
+    }
+  });
+</script>
+
+<%- include('partials/footer') %>

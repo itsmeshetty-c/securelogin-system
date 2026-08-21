@@ -1,0 +1,102 @@
+<%- include('partials/header') %>
+
+<div class="dashboard-header">
+  <div class="user-greeting">
+    <h2>Welcome back, <span class="highlight-name"><%= user.username %></span>!</h2>
+    <p>Your session is authenticated and protected with enterprise security measures.</p>
+  </div>
+  <div class="header-actions">
+    <a href="/setup-2fa" class="btn btn-secondary">
+      <i class="fa-solid fa-key"></i> 2FA Settings
+    </a>
+    <a href="/logout" class="btn btn-outline-danger">
+      <i class="fa-solid fa-right-from-bracket"></i> Logout
+    </a>
+  </div>
+</div>
+
+<div class="dashboard-grid">
+  <!-- Profile & Account Info Card -->
+  <div class="card card-profile">
+    <div class="card-header border-bottom">
+      <h3><i class="fa-solid fa-id-card"></i> Account Profile</h3>
+    </div>
+    <div class="profile-details-list">
+      <div class="profile-row">
+        <span class="row-label"><i class="fa-solid fa-hashtag"></i> User ID</span>
+        <span class="row-value code-font">#<%= user.id %></span>
+      </div>
+      <div class="profile-row">
+        <span class="row-label"><i class="fa-solid fa-user"></i> Username</span>
+        <span class="row-value"><strong><%= user.username %></strong></span>
+      </div>
+      <div class="profile-row">
+        <span class="row-label"><i class="fa-solid fa-envelope"></i> Email Address</span>
+        <span class="row-value"><%= user.email %></span>
+      </div>
+      <div class="profile-row">
+        <span class="row-label"><i class="fa-solid fa-calendar-day"></i> Account Created</span>
+        <span class="row-value"><%= new Date(user.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %></span>
+      </div>
+      <div class="profile-row">
+        <span class="row-label"><i class="fa-solid fa-shield-halved"></i> 2FA Protection</span>
+        <span class="row-value">
+          <% if (user.is_two_factor_enabled === 1) { %>
+            <span class="badge-status-active"><i class="fa-solid fa-circle-check"></i> Enabled (Google TOTP)</span>
+          <% } else { %>
+            <span class="badge-status-warning"><i class="fa-solid fa-triangle-exclamation"></i> Disabled (<a href="/setup-2fa">Enable 2FA</a>)</span>
+          <% } %>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Security Audit & Protections Active Card -->
+  <div class="card card-security">
+    <div class="card-header border-bottom">
+      <h3><i class="fa-solid fa-shield-cat"></i> Security Measures Active</h3>
+    </div>
+
+    <div class="security-features-grid">
+      <!-- Feature 1: Password Hash -->
+      <div class="feature-card">
+        <div class="feature-icon text-success"><i class="fa-solid fa-lock"></i></div>
+        <div class="feature-info">
+          <h4>Bcrypt Password Hashing</h4>
+          <p>Password salted & hashed with 12 rounds of bcrypt before DB storage.</p>
+        </div>
+      </div>
+
+      <!-- Feature 2: 2FA TOTP -->
+      <div class="feature-card">
+        <div class="feature-icon <%= user.is_two_factor_enabled === 1 ? 'text-success' : 'text-warning' %>">
+          <i class="fa-solid fa-key"></i>
+        </div>
+        <div class="feature-info">
+          <h4>Two-Factor Authentication</h4>
+          <p><%= user.is_two_factor_enabled === 1 ? 'Speakeasy TOTP verification active on login.' : '2FA is currently disabled. Enable to add second security layer.' %></p>
+        </div>
+      </div>
+
+      <!-- Feature 3: SQL Injection -->
+      <div class="feature-card">
+        <div class="feature-icon text-success"><i class="fa-solid fa-database"></i></div>
+        <div class="feature-info">
+          <h4>SQL Injection Defense</h4>
+          <p>SQLite queries executed exclusively via prepared statements.</p>
+        </div>
+      </div>
+
+      <!-- Feature 4: Session Security -->
+      <div class="feature-card">
+        <div class="feature-icon text-success"><i class="fa-solid fa-cookie-bite"></i></div>
+        <div class="feature-info">
+          <h4>Secure Session Cookies</h4>
+          <p>HTTP-only session cookies prevent client-side XSS script token theft.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
