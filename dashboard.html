@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Secure Login System</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="min-h-screen flex flex-col justify-between p-4 sm:p-6 lg:p-8">
+
+  <!-- Navbar -->
+  <nav class="max-w-6xl mx-auto w-full glass-card rounded-2xl px-6 py-4 flex items-center justify-between shadow-xl mb-6">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
+        <i class="fa-solid fa-shield-halved text-xl"></i>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold text-white tracking-wide">SecureAuth Dashboard</h1>
+        <p class="text-xs text-slate-400">Authenticated Session</p>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-4">
+      <div class="hidden md:flex items-center space-x-2 bg-slate-900/80 border border-slate-700/80 px-3.5 py-1.5 rounded-full text-xs text-slate-300">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span id="navUsername">Loading...</span>
+      </div>
+      <button id="logoutBtn"
+        class="bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/40 text-rose-300 font-medium px-4 py-2 rounded-xl text-xs flex items-center space-x-2 transition duration-200">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        <span>Logout</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Alert Banner -->
+  <div class="max-w-6xl mx-auto w-full mb-4">
+    <div id="dashAlert" class="hidden p-4 rounded-xl text-sm flex items-start space-x-3 animate-fade-in">
+      <i id="dashAlertIcon" class="fa-solid fa-circle-info mt-0.5"></i>
+      <div id="dashAlertMsg" class="flex-1"></div>
+    </div>
+  </div>
+
+  <!-- Dashboard Main Grid -->
+  <main class="max-w-6xl mx-auto w-full flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+
+    <!-- Column 1: Account Profile & 2FA Status -->
+    <div class="space-y-6">
+      
+      <!-- Profile Card -->
+      <div class="glass-card rounded-2xl p-6">
+        <h2 class="text-base font-bold text-white mb-4 flex items-center space-x-2">
+          <i class="fa-solid fa-id-card text-indigo-400"></i>
+          <span>Account Overview</span>
+        </h2>
+
+        <div class="space-y-3.5 text-sm">
+          <div class="flex justify-between items-center py-2 border-b border-slate-700/50">
+            <span class="text-slate-400">Username</span>
+            <span id="profUsername" class="font-medium text-slate-200">...</span>
+          </div>
+          <div class="flex justify-between items-center py-2 border-b border-slate-700/50">
+            <span class="text-slate-400">Email</span>
+            <span id="profEmail" class="font-medium text-slate-200">...</span>
+          </div>
+          <div class="flex justify-between items-center py-2 border-b border-slate-700/50">
+            <span class="text-slate-400">Account ID</span>
+            <span id="profId" class="font-mono text-slate-400">#...</span>
+          </div>
+          <div class="flex justify-between items-center py-2 border-b border-slate-700/50">
+            <span class="text-slate-400">Created At</span>
+            <span id="profCreated" class="text-xs text-slate-300">...</span>
+          </div>
+          <div class="flex justify-between items-center py-2">
+            <span class="text-slate-400">Last Login</span>
+            <span id="profLastLogin" class="text-xs text-slate-300">...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2FA Management Card -->
+      <div class="glass-card rounded-2xl p-6">
+        <h2 class="text-base font-bold text-white mb-2 flex items-center space-x-2">
+          <i class="fa-solid fa-mobile-screen-button text-indigo-400"></i>
+          <span>Two-Factor Authentication</span>
+        </h2>
+        <p class="text-xs text-slate-400 mb-4 leading-relaxed">
+          Add an extra layer of security using Time-based One-Time Passwords (TOTP) from Google Authenticator, Authy, or Microsoft Authenticator.
+        </p>
+
+        <div class="p-4 rounded-xl bg-slate-900/70 border border-slate-800 mb-4 flex items-center justify-between">
+          <div>
+            <div class="text-xs text-slate-400 mb-1">Status</div>
+            <div id="twoFactorStatusBadge" class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-semibold">
+              <!-- Loaded dynamically -->
+            </div>
+          </div>
+          <button id="toggle2FABtn"
+            class="px-4 py-2 rounded-xl text-xs font-medium transition duration-200 shadow-md">
+            <!-- Dynamic button -->
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Column 2: Password Change & Security Settings -->
+    <div class="space-y-6">
+      
+      <!-- Change Password Card -->
+      <div class="glass-card rounded-2xl p-6">
+        <h2 class="text-base font-bold text-white mb-2 flex items-center space-x-2">
+          <i class="fa-solid fa-key text-indigo-400"></i>
+          <span>Update Password</span>
+        </h2>
+        <p class="text-xs text-slate-400 mb-4">
+          Ensure your password uses at least 8 characters including uppercase, lowercase, numbers, and symbols.
+        </p>
+
+        <form id="changePasswordForm" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+              Current Password
+            </label>
+            <input type="password" id="currentPassword" required
+              class="w-full bg-slate-900/80 border border-slate-700 rounded-xl py-2 px-3.5 text-slate-200 text-sm input-focus"
+              placeholder="••••••••">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+              New Password
+            </label>
+            <input type="password" id="newPassword" required minlength="8"
+              class="w-full bg-slate-900/80 border border-slate-700 rounded-xl py-2 px-3.5 text-slate-200 text-sm input-focus"
+              placeholder="Min. 8 characters">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+              Confirm New Password
+            </label>
+            <input type="password" id="confirmNewPassword" required
+              class="w-full bg-slate-900/80 border border-slate-700 rounded-xl py-2 px-3.5 text-slate-200 text-sm input-focus"
+              placeholder="Repeat new password">
+          </div>
+
+          <button type="submit" id="updatePasswordBtn"
+            class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 rounded-xl text-sm transition duration-200 flex items-center justify-center space-x-2 shadow-lg shadow-indigo-600/30">
+            <i class="fa-solid fa-lock text-xs"></i>
+            <span>Update Password</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- Security Details Box -->
+      <div class="glass-card rounded-2xl p-6 text-xs text-slate-300 space-y-3">
+        <h3 class="font-bold text-white flex items-center space-x-2 text-sm">
+          <i class="fa-solid fa-shield-check text-emerald-400"></i>
+          <span>Active Protections</span>
+        </h3>
+        <ul class="space-y-2">
+          <li class="flex items-center space-x-2">
+            <i class="fa-solid fa-check text-emerald-400 text-xs"></i>
+            <span>Password Hashing: <strong>bcrypt (12 rounds)</strong></span>
+          </li>
+          <li class="flex items-center space-x-2">
+            <i class="fa-solid fa-check text-emerald-400 text-xs"></i>
+            <span>SQL Injection: <strong>Parameterized Prepared Statements</strong></span>
+          </li>
+          <li class="flex items-center space-x-2">
+            <i class="fa-solid fa-check text-emerald-400 text-xs"></i>
+            <span>Session: <strong>HttpOnly &amp; SameSite Cookie Security</strong></span>
+          </li>
+          <li class="flex items-center space-x-2">
+            <i class="fa-solid fa-check text-emerald-400 text-xs"></i>
+            <span>Brute Force: <strong>Rate Limiting Protected</strong></span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Column 3: Security Audit Logs -->
+    <div class="lg:col-span-1">
+      <div class="glass-card rounded-2xl p-6 h-full flex flex-col">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-base font-bold text-white flex items-center space-x-2">
+            <i class="fa-solid fa-clock-rotate-left text-indigo-400"></i>
+            <span>Security Audit Log</span>
+          </h2>
+          <button id="refreshLogsBtn" class="text-slate-400 hover:text-white text-xs">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
+        </div>
+
+        <p class="text-xs text-slate-400 mb-4">
+          Recent security events and authentication history.
+        </p>
+
+        <div id="logsContainer" class="flex-1 overflow-y-auto max-h-[420px] space-y-2.5 pr-1 text-xs">
+          <!-- Logs loaded dynamically -->
+          <div class="text-center text-slate-500 py-8">Loading audit logs...</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- 2FA SETUP MODAL -->
+  <div id="modal2FASetup" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+    <div class="glass-modal max-w-md w-full rounded-2xl p-6 shadow-2xl border border-indigo-500/30 animate-fade-in">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+          <i class="fa-solid fa-qrcode text-indigo-400"></i>
+          <span>Enable Two-Factor (2FA)</span>
+        </h3>
+        <button id="close2FAModal" class="text-slate-400 hover:text-slate-200 text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="space-y-4 text-xs text-slate-300">
+        <p>1. Open your authenticator app (Google Authenticator, Microsoft Authenticator, Authy) and scan this QR code:</p>
+        
+        <div class="bg-white p-4 rounded-xl flex items-center justify-center w-48 h-48 mx-auto shadow-lg">
+          <img id="qrCodeImg" src="" alt="2FA QR Code" class="w-full h-full object-contain">
+        </div>
+
+        <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800">
+          <span class="text-slate-400 block mb-1 text-[11px]">Or enter secret key manually:</span>
+          <code id="secretKeyText" class="font-mono text-indigo-300 select-all break-all text-xs font-bold">...</code>
+        </div>
+
+        <p>2. Enter the 6-digit verification code generated by your authenticator app:</p>
+
+        <form id="verify2FASetupForm" class="space-y-4">
+          <input type="text" id="setupToken" required maxlength="6" inputmode="numeric" pattern="[0-9]{6}"
+            class="w-full bg-slate-900 border border-indigo-500/50 rounded-xl py-2.5 text-center text-xl font-mono tracking-widest text-indigo-200 placeholder-slate-600 input-focus"
+            placeholder="000000">
+
+          <div class="flex space-x-3">
+            <button type="button" id="cancel2FASetupBtn"
+              class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2.5 rounded-xl font-medium transition duration-200">
+              Cancel
+            </button>
+            <button type="submit" id="confirm2FABtn"
+              class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-2.5 rounded-xl font-medium transition duration-200 shadow-lg shadow-emerald-600/30">
+              Activate 2FA
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2FA DISABLE CONFIRM MODAL -->
+  <div id="modal2FADisable" class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+    <div class="glass-modal max-w-sm w-full rounded-2xl p-6 shadow-2xl border border-rose-500/30 animate-fade-in">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-white flex items-center space-x-2">
+          <i class="fa-solid fa-triangle-exclamation text-rose-400"></i>
+          <span>Disable 2FA</span>
+        </h3>
+        <button id="close2FADisableModal" class="text-slate-400 hover:text-slate-200 text-lg">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-300 mb-4">
+        Disabling Two-Factor Authentication reduces your account security. Please enter your password to confirm:
+      </p>
+
+      <form id="disable2FAForm" class="space-y-4">
+        <div>
+          <input type="password" id="disable2FAPassword" required
+            class="w-full bg-slate-900 border border-slate-700 rounded-xl py-2 px-3 text-slate-200 text-sm input-focus"
+            placeholder="Account password">
+        </div>
+
+        <div class="flex space-x-3">
+          <button type="button" id="cancelDisable2FABtn"
+            class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 py-2.5 rounded-xl text-xs font-medium transition duration-200">
+            Cancel
+          </button>
+          <button type="submit"
+            class="flex-1 bg-rose-600 hover:bg-rose-500 text-white py-2.5 rounded-xl text-xs font-medium transition duration-200 shadow-lg shadow-rose-600/30">
+            Confirm Disable
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="max-w-6xl mx-auto w-full text-center text-xs text-slate-500 py-4 border-t border-slate-800/60">
+    <p>Secure Login Web Application &bull; Active Protected Session</p>
+  </footer>
+
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>
