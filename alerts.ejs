@@ -1,0 +1,23 @@
+<% if (messages && messages.error && messages.error.length > 0) { %>
+  <div class="alert-container">
+    <% messages.error.forEach(function(msg) { %>
+      <div class="alert alert-error">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span><%= msg %></span>
+        <button type="button" class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+      </div>
+    <% }); %>
+  </div>
+<% } %>
+
+<% if (messages && messages.success && messages.success.length > 0) { %>
+  <div class="alert-container">
+    <% messages.success.forEach(function(msg) { %>
+      <div class="alert alert-success">
+        <i class="fa-solid fa-circle-check"></i>
+        <span><%= msg %></span>
+        <button type="button" class="alert-close" onclick="this.parentElement.remove()">&times;</button>
+      </div>
+    <% }); %>
+  </div>
+<% } %>

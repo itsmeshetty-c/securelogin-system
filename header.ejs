@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title + ' | SecureAuth Platform' : 'SecureAuth Platform' %></title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom Style -->
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="/" class="nav-brand">
+        <i class="fa-solid fa-user-shield brand-icon"></i>
+        <span>SecureAuth <span class="badge-v">2FA System</span></span>
+      </a>
+      <nav class="nav-links">
+        <% if (user) { %>
+          <a href="/dashboard" class="nav-item <%= title === 'User Dashboard' ? 'active' : '' %>">
+            <i class="fa-solid fa-gauge"></i> Dashboard
+          </a>
+          <a href="/setup-2fa" class="nav-item <%= title.includes('Two-Factor') ? 'active' : '' %>">
+            <i class="fa-solid fa-key"></i> 2FA Security
+          </a>
+          <a href="/logout" class="nav-item btn-nav-logout">
+            <i class="fa-solid fa-right-from-bracket"></i> Logout
+          </a>
+        <% } else { %>
+          <a href="/login" class="nav-item <%= title === 'Login to Account' ? 'active' : '' %>">
+            <i class="fa-solid fa-right-to-bracket"></i> Login
+          </a>
+          <a href="/register" class="nav-item btn-nav-register <%= title === 'Register Account' ? 'active' : '' %>">
+            <i class="fa-solid fa-user-plus"></i> Register
+          </a>
+        <% } %>
+      </nav>
+    </div>
+  </header>
+  <main class="main-wrapper">
+    <div class="container">
+      <%- include('alerts') %>
